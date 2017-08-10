@@ -4,28 +4,38 @@ FROM gcc:6
 RUN set -ex; \
  apt-get -yqq update; \
  apt-get -yqq install \
-	 libedit-dev \
-	 libncurses5-dev \
-	 ninja-build \
-	 python2.7-dev \
-	 swig; \
+   libedit-dev \
+   libncurses5-dev \
+   ninja-build \
+   python2.7-dev \
+   swig; \
  apt-get -yqq clean; \
  rm -rf /var/lib/apt/lists/*;
 
+RUN set -ex; \
+  if ! command -v gpg > /dev/null; then \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+      gnupg2 \
+      dirmngr \
+    ; \
+    rm -rf /var/lib/apt/lists/*; \
+  fi
+
 ENV GPG_KEYS \
 # 4096R/345AD05D 2015-01-20 Hans Wennborg <hans@chromium.org>
-	B6C8F98282B944E3B0D5C2530FC3042E345AD05D \
+  B6C8F98282B944E3B0D5C2530FC3042E345AD05D \
 # 2048R/02119294 2014-05-06 Tom Stellard <tstellar@redhat.com>
-	11E521D646982372EB577A1F8F0871F202119294 \
+  11E521D646982372EB577A1F8F0871F202119294 \
 # 2048R/BB5A0569 2013-12-24 Bill Wendling <void@llvm.org>
-	54E3BDE33185D9F69664D22455F5CD70BB5A0569 \
+  54E3BDE33185D9F69664D22455F5CD70BB5A0569 \
 # 4096R/7BFB4EDA 2014-06-16 Brad King <brad.king@kitware.com>
   CBA23971357C2E6590D9EFD3EC8FEF3A7BFB4EDA
 
 RUN set -ex; \
-	for key in $GPG_KEYS; do \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-	done
+  for key in $GPG_KEYS; do \
+    gpg --keyserver pgp.key-server.io --recv-keys "$key"; \
+  done
 
 RUN set -ex; \
  curl -fSL https://cmake.org/files/v3.7/cmake-3.7.2-SHA-256.txt -o cmake-3.7.2-SHA-256.txt; \
