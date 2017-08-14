@@ -34,7 +34,7 @@ ENV GPG_KEYS \
 
 RUN set -ex; \
   for key in $GPG_KEYS; do \
-    gpg --keyserver pgp.key-server.io --recv-keys "$key"; \
+    gpg --keyserver hkp://ha.pool.sks-keyservers.net --recv-keys "$key"; \
   done
 
 RUN set -ex; \
@@ -43,7 +43,8 @@ RUN set -ex; \
  curl -fSL https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz -o cmake-3.7.2-Linux-x86_64.tar.gz; \
  gpg --verify cmake-3.7.2-SHA-256.txt.asc; \
  grep cmake-3.7.2-Linux-x86_64.tar.gz cmake-3.7.2-SHA-256.txt | sha256sum --check; \
- tar -xf cmake-3.7.2-Linux-x86_64.tar.gz -C /usr/local --strip-components=1
+ tar -xf cmake-3.7.2-Linux-x86_64.tar.gz -C /usr/local --strip-components=1; \
+ rm cmake-3.7.2-*
 
 RUN set -ex; \
  curl -fSL https://releases.llvm.org/4.0.1/llvm-4.0.1.src.tar.xz -o llvm.src.tar.xz; \
