@@ -1,27 +1,6 @@
 # start from base
 FROM gcc:6
 
-RUN set -ex; \
- apt-get -yqq update; \
- apt-get -yqq install \
-   libedit-dev \
-   libncurses5-dev \
-   ninja-build \
-   python2.7-dev \
-   swig; \
- apt-get -yqq clean; \
- rm -rf /var/lib/apt/lists/*;
-
-RUN set -ex; \
-  if ! command -v gpg > /dev/null; then \
-    apt-get update; \
-    apt-get install -y --no-install-recommends \
-      gnupg2 \
-      dirmngr \
-    ; \
-    rm -rf /var/lib/apt/lists/*; \
-  fi
-
 ENV GPG_KEYS \
 # 4096R/345AD05D 2015-01-20 Hans Wennborg <hans@chromium.org>
   B6C8F98282B944E3B0D5C2530FC3042E345AD05D \
@@ -38,15 +17,23 @@ RUN set -ex; \
   done
 
 RUN set -ex; \
+ apt-get -yqq update; \
+ apt-get -yqq install \
+   libedit-dev \
+   ninja-build \
+   python2.7-dev \
+   swig; \
+ apt-get -yqq clean; \
+ rm -rf /var/lib/apt/lists/*; \
+ \
  curl -fSL https://cmake.org/files/v3.7/cmake-3.7.2-SHA-256.txt -o cmake-3.7.2-SHA-256.txt; \
  curl -fSL https://cmake.org/files/v3.7/cmake-3.7.2-SHA-256.txt.asc -o cmake-3.7.2-SHA-256.txt.asc; \
  curl -fSL https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz -o cmake-3.7.2-Linux-x86_64.tar.gz; \
  gpg --verify cmake-3.7.2-SHA-256.txt.asc; \
  grep cmake-3.7.2-Linux-x86_64.tar.gz cmake-3.7.2-SHA-256.txt | sha256sum --check; \
  tar -xf cmake-3.7.2-Linux-x86_64.tar.gz -C /usr/local --strip-components=1; \
- rm cmake-3.7.2-*
-
-RUN set -ex; \
+ rm cmake-3.7.2-*; \
+ \
  curl -fSL https://releases.llvm.org/4.0.1/llvm-4.0.1.src.tar.xz -o llvm.src.tar.xz; \
  curl -fSL https://releases.llvm.org/4.0.1/llvm-4.0.1.src.tar.xz.sig -o llvm.src.tar.xz.sig; \
  gpg --batch --verify llvm.src.tar.xz.sig llvm.src.tar.xz; \
@@ -115,9 +102,8 @@ RUN set -ex; \
  gpg --batch --verify openmp.src.tar.xz.sig openmp.src.tar.xz; \
  mkdir -p /usr/src/llvm/projects/openmp; \
  tar -xf openmp.src.tar.xz -C /usr/src/llvm/projects/openmp --strip-components=1; \
- rm openmp.src.tar.xz*;
-
-RUN set -ex; \
+ rm openmp.src.tar.xz*; \
+ \
  mkdir /tmp/build && cd /tmp/build; \
  cmake \
   -GNinja \
