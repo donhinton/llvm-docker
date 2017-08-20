@@ -105,13 +105,12 @@ RUN set -ex; \
  rm openmp.src.tar.xz*; \
  \
  mkdir /tmp/build && cd /tmp/build; \
- LD_LIBRARY_PATHx=/opt/gcc-7/lib64 \
  cmake \
   -GNinja \
-	-DCMAKE_C_COMPILER=/opt/gcc-7/bin/gcc \
-	-DCMAKE_CXX_COMPILER=/opt/gcc-7/bin/g++ \
-	-DGCC_INSTALL_PREFIX=/opt/gcc-7 \
-	-DCMAKE_EXE_LINKER_FLAGS="-Xlinker -R/opt/gcc-7/lib64 -L/opt/gcc-7/lib64" \
+  -DCMAKE_C_COMPILER=/opt/gcc-7/bin/gcc \
+  -DCMAKE_CXX_COMPILER=/opt/gcc-7/bin/g++ \
+  -DGCC_INSTALL_PREFIX=/opt/gcc-7 \
+  -DCMAKE_EXE_LINKER_FLAGS="-Xlinker -R/opt/gcc-7/lib64 -L/opt/gcc-7/lib64" \
   -DCMAKE_BUILD_TYPE=Release \
   -DLLVM_ENABLE_ASSERTIONS=ON \
   -DLLVM_PARALLEL_LINK_JOBS=1 \
